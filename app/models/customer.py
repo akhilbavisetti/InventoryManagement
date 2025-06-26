@@ -9,5 +9,6 @@ class Customer(db.Model):
     phone = Column(String(20))
     email = Column(String(100))
     address = Column(Text)
+    business_id = Column(Integer, db.ForeignKey('businesses.id'), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow) 
