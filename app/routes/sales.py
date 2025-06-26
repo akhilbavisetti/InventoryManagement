@@ -130,6 +130,17 @@ def view(id):
         flash('Sale not found', 'danger')
         return redirect(url_for('sales.index'))
     items = SaleItem.query.filter_by(sale_id=id).all()
+    # Annotate sale with customer details
+    if sale.customer_id:
+        customer = Customer.query.filter_by(id=sale.customer_id).first()
+        if customer:
+            sale.customer_name = customer.name
+            sale.customer_address = customer.address
+            sale.customer_phone = customer.phone
+    else:
+        sale.customer_name = None
+        sale.customer_address = None
+        sale.customer_phone = None
     company_info = CompanyInfo.query.get(1)
     return render_template(
         'sales/view.html',
