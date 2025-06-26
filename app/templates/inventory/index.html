@@ -54,9 +54,6 @@
                     <thead>
                         <tr>
                             <th>
-                                <!-- Product No. column removed -->
-                            </th>
-                            <th>
                                 <a href="{{ url_for('inventory.index', category_id=filters.category_id, search=filters.search, low_stock=filters.low_stock, sort_by='name', sort_order='asc' if sort_by != 'name' or sort_order == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
                                     Name
                                     {% if sort_by == 'name' %}

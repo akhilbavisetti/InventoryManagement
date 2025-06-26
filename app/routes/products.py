@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app.models import Product, Category, StockAdjustment, SaleItem, PurchaseItem
 from app import db
 from datetime import datetime
+from decimal import Decimal
 
 bp = Blueprint('products', __name__, url_prefix='/products')
 
@@ -138,7 +139,7 @@ def stock_adjustment(id):
                 user_id=current_user.id
             )
             db.session.add(adjustment)
-            product.current_stock += quantity
+            product.current_stock += Decimal(str(quantity))
             db.session.commit()
             flash('Stock adjustment added successfully', 'success')
             return redirect(url_for('inventory.index'))
