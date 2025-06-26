@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 from app.models import Sale, SaleItem, Customer, Product, Category, CompanyInfo
 from app import db
+from decimal import Decimal
 
 bp = Blueprint('sales', __name__, url_prefix='/sales')
 
@@ -103,7 +104,7 @@ def create():
                 # Decrement product stock
                 product = Product.query.get(product_id)
                 if product:
-                    product.current_stock -= quantity
+                    product.current_stock -= Decimal(str(quantity))
             db.session.commit()
             flash('Sale recorded successfully', 'success')
             return redirect(url_for('sales.view', id=sale.id))
