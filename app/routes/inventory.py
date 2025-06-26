@@ -37,7 +37,7 @@ def index():
     else:
         query = query.order_by(getattr(getattr(Product, sort_by), sort_order)())
     products = query.all()
-    categories = Category.query.order_by(Category.name).all()
+    categories = Category.query.filter_by(business_id=current_user.business_id).order_by(Category.name).all()
     all_products = Product.query.filter_by(business_id=current_user.business_id).order_by(Product.name).all()
     return render_template(
         'inventory/index.html',

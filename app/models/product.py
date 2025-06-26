@@ -5,9 +5,11 @@ from datetime import datetime
 
 class Category(db.Model):
     __tablename__ = 'categories'
+    __table_args__ = (db.UniqueConstraint('name', 'business_id', name='uq_category_name_business'),)
     id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True, nullable=False)
+    name = Column(String(50), nullable=False)
     description = Column(Text)
+    business_id = Column(Integer, ForeignKey('businesses.id'), nullable=False)
     # Relationship to products
     products = relationship('Product', backref='category')
 

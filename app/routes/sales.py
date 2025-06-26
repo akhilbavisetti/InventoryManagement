@@ -100,6 +100,10 @@ def create():
                     total_price=total_price
                 )
                 db.session.add(sale_item)
+                # Decrement product stock
+                product = Product.query.get(product_id)
+                if product:
+                    product.current_stock -= quantity
             db.session.commit()
             flash('Sale recorded successfully', 'success')
             return redirect(url_for('sales.view', id=sale.id))

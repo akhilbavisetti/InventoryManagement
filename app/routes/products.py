@@ -38,7 +38,7 @@ def create():
         min_stock_level = request.form.get('min_stock_level', 10)
         try:
             if category_id == 'other' and new_category:
-                category = Category(name=new_category)
+                category = Category(name=new_category, business_id=current_user.business_id)
                 db.session.add(category)
                 db.session.commit()
                 category_id = category.id
@@ -70,7 +70,7 @@ def create():
         except Exception as e:
             db.session.rollback()
             flash(f'Error adding product: {str(e)}', 'danger')
-    categories = Category.query.order_by(Category.name).all()
+    categories = Category.query.filter_by(business_id=current_user.business_id).order_by(Category.name).all()
     return render_template('products/create.html', categories=categories)
 
 @bp.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -94,7 +94,7 @@ def edit(id):
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating product: {str(e)}', 'danger')
-    categories = Category.query.order_by(Category.name).all()
+    categories = Category.query.filter_by(business_id=current_user.business_id).order_by(Category.name).all()
     return render_template('products/edit.html', product=product, categories=categories)
 
 @bp.route('/delete/<int:id>', methods=['POST'])
@@ -239,48 +239,40 @@ def ledger(product_id):
 @bp.route('/categories')
 @login_required
 def categories():
-    conn = mysql.connection
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    cursor.execute('SELECT * FROM categories WHERE business_id = %s ORDER BY name', (current_user.business_id,))
-    categories = cursor.fetchall()
-    cursor.close()
+    categories = Category.query.filter_by(business_id=current_user.business_id).order_by(Category.name).all()
     return render_template('products/categories.html', categories=categories)
 
 @bp.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_category(id):
-    conn = mysql.connection
-    cursor = conn.cursor(pymysql.cursors.DictCursor)
-    cursor.execute('SELECT * FROM categories WHERE id = %s AND business_id = %s', (id, current_user.business_id))
-    category = cursor.fetchone()
+    category = Category.query.filter_by(id=id, business_id=current_user.business_id).first()
     if not category:
         flash('Category not found', 'danger')
         return redirect(url_for('products.categories'))
     if request.method == 'POST':
         name = request.form.get('name')
         try:
-            cursor.execute('UPDATE categories SET name = %s WHERE id = %s AND business_id = %s', (name, id, current_user.business_id))
-            conn.commit()
+            category.name = name
+            db.session.commit()
             flash('Category updated successfully', 'success')
             return redirect(url_for('products.categories'))
         except Exception as e:
-            conn.rollback()
+            db.session.rollback()
             flash(f'Error updating category: {str(e)}', 'danger')
-    cursor.close()
     return render_template('products/edit_category.html', category=category)
 
 @bp.route('/categories/delete/<int:id>', methods=['POST'])
 @login_required
 def delete_category(id):
-    conn = mysql.connection
-    cursor = conn.cursor()
+    category = Category.query.filter_by(id=id, business_id=current_user.business_id).first()
+    if not category:
+        flash('Category not found', 'danger')
+        return redirect(url_for('products.categories'))
     try:
-        cursor.execute('DELETE FROM categories WHERE id = %s AND business_id = %s', (id, current_user.business_id))
-        conn.commit()
+        db.session.delete(category)
+        db.session.commit()
         flash('Category deleted successfully', 'success')
     except Exception as e:
-        conn.rollback()
+        db.session.rollback()
         flash(f'Error deleting category: {str(e)}', 'danger')
-    finally:
-        cursor.close()
     return redirect(url_for('products.categories')) 
