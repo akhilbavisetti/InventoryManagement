@@ -123,7 +123,8 @@ def view(id):
         flash('Purchase not found', 'danger')
         return redirect(url_for('purchases.index'))
     items = PurchaseItem.query.filter_by(purchase_id=id).all()
-    company_info = CompanyInfo.query.get(1)
+    # Fetch business info for the current user
+    company_info = current_user.business
     return render_template(
         'purchases/view.html',
         purchase=purchase,
