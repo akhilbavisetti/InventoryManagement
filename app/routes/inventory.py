@@ -74,6 +74,18 @@ def ledger(product_id):
     if end_date:
         sale_query = sale_query.filter(Sale.sale_date <= end_date)
     sales = sale_query.all()
+
+    # Annotate purchases
+    for p in purchases:
+        p.party = p.purchase.supplier.name if p.purchase and p.purchase.supplier else ''
+        p.ref_id = p.purchase.id if p.purchase else ''
+        p.reference_number = p.purchase.reference_number if p.purchase else ''
+    # Annotate sales
+    for s in sales:
+        s.party = s.sale.customer.name if s.sale and s.sale.customer else ''
+        s.ref_id = s.sale.id if s.sale else ''
+        s.reference_number = s.sale.invoice_number if s.sale else ''
+
     day_map = defaultdict(lambda: {'purchases': [], 'sales': []})
     all_dates = set()
     for p in purchases:
