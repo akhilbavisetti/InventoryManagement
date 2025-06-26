@@ -17,7 +17,6 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Product No.</th>
                             <th>
                                 <a href="{{ url_for('products.index', sort_by='name', sort_order='asc' if sort_by != 'name' or sort_order == 'desc' else 'desc') }}" class="text-dark text-decoration-none">
                                     Name
@@ -77,9 +76,8 @@
                             {% for product in products %}
                             <tr class="{% if product.current_stock <= product.min_stock_level %}low-stock{% endif %}">
                                 <td>{{ loop.index }}</td>
-                                <td>{{ product.business_product_number }}</td>
                                 <td>{{ product.name }}</td>
-                                <td>{{ product.category_name }}</td>
+                                <td>{{ product.category.name }}</td>
                                 <td>₹{{ "%.2f"|format(product.purchase_price) }}</td>
                                 <td>₹{{ "%.2f"|format(product.selling_price) }}</td>
                                 <td>{{ product.unit }}</td>
