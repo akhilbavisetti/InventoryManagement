@@ -126,9 +126,9 @@
                                 <td>{{ loop.index }}</td>
                                 <td>{{ purchase.purchase_date.strftime('%d-%m-%Y') if purchase.purchase_date else '' }}</td>
                                 <td>{{ purchase.reference_number }}</td>
-                                <td>{{ purchase.supplier_name }}</td>
+                                <td>{{ purchase.supplier.name if purchase.supplier else '' }}</td>
                                 <td>₹{{ "%.2f"|format(purchase.total_amount) }}</td>
-                                <td>{{ purchase.item_count }}</td>
+                                <td>{{ purchase.items|length }}</td>
                                 <td>
                                     <a href="{{ url_for('purchases.view', id=purchase.id) }}" class="btn btn-sm btn-info btn-action" title="View">
                                         <i class="fas fa-eye"></i>
