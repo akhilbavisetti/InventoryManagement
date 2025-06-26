@@ -49,15 +49,15 @@
             <div class="row mb-4">
                 <div class="col-md-6">
                     <h5>Supplier Details</h5>
-                    <div><strong>{{ purchase.supplier_name }}</strong></div>
-                    {% if purchase.contact_person %}
-                    <div>Attn: {{ purchase.contact_person }}</div>
+                    <div><strong>{{ purchase.supplier.name }}</strong></div>
+                    {% if purchase.supplier.contact_person %}
+                    <div>Attn: {{ purchase.supplier.contact_person }}</div>
                     {% endif %}
-                    {% if purchase.supplier_address %}
-                    <div>{{ purchase.supplier_address }}</div>
+                    {% if purchase.supplier.address %}
+                    <div>{{ purchase.supplier.address }}</div>
                     {% endif %}
-                    {% if purchase.supplier_phone %}
-                    <div>Phone: {{ purchase.supplier_phone }}</div>
+                    {% if purchase.supplier.phone %}
+                    <div>Phone: {{ purchase.supplier.phone }}</div>
                     {% endif %}
                 </div>
             </div>
@@ -76,10 +76,10 @@
                     <tbody>
                         {% for item in items %}
                         <tr>
-                            <td>{{ item.product_name }}</td>
+                            <td>{{ item.product.name }}</td>
                             <td class="text-end">{{ "%.2f"|format(item.unit_price) }}</td>
                             <td class="text-end">{{ "%.2f"|format(item.quantity) }}</td>
-                            <td class="text-end">{{ item.unit }}</td>
+                            <td class="text-end">{{ item.product.unit }}</td>
                             <td class="text-end">{{ "%.2f"|format(item.total_price) }}</td>
                         </tr>
                         {% endfor %}

@@ -17,6 +17,7 @@ class Sale(db.Model):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # Relationships
     items = relationship('SaleItem', backref='sale')
+    customer = relationship('Customer', backref='sales')
 
 class SaleItem(db.Model):
     __tablename__ = 'sale_items'

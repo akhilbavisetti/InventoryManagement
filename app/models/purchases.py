@@ -17,6 +17,7 @@ class Purchase(db.Model):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # Relationships
     items = relationship('PurchaseItem', backref='purchase')
+    supplier = relationship('Supplier', backref='purchases')
 
 class PurchaseItem(db.Model):
     __tablename__ = 'purchase_items'
@@ -25,4 +26,5 @@ class PurchaseItem(db.Model):
     product_id = Column(Integer, ForeignKey('products.id'), nullable=False)
     quantity = Column(Numeric(10, 2), nullable=False)
     unit_price = Column(Numeric(10, 2), nullable=False)
-    total_price = Column(Numeric(10, 2), nullable=False) 
+    total_price = Column(Numeric(10, 2), nullable=False)
+    product = relationship('Product') 

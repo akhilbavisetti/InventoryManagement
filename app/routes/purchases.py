@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 from app.models import Purchase, PurchaseItem, Supplier, Product, Category, CompanyInfo
 from app import db
+from decimal import Decimal
 
 bp = Blueprint('purchases', __name__, url_prefix='/purchases')
 
@@ -93,6 +94,10 @@ def create():
                     total_price=total_price
                 )
                 db.session.add(purchase_item)
+                # Update product stock
+                product = Product.query.get(product_id)
+                if product:
+                    product.current_stock += Decimal(str(quantity))
             db.session.commit()
             flash('Purchase recorded successfully', 'success')
             return redirect(url_for('purchases.view', id=purchase.id))
